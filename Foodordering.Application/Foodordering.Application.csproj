@@ -27,7 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Users\Validators\" />
+    <Folder Include="Resturants\Commands\" />
+    <Folder Include="Resturants\Handlers\" />
+    <Folder Include="Resturants\Queries\" />
   </ItemGroup>
 
 </Project>

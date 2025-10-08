@@ -17,6 +17,8 @@ namespace Foodordering.Domain.Entities
         public DateTime LoggedInAt { get; private set; } = DateTime.UtcNow;
         public bool IsSuccessful { get; private set; }
 
+        public User User { get; private set; }
+
         private LoginHistory() { } // EF
 
         public LoginHistory(Guid userId, string? deviceId, string? deviceName, string? ip, string? userAgent, bool isSuccessful)

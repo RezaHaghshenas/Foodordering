@@ -32,6 +32,11 @@ namespace Foodordering.Domain.Entities
         public List<RefreshToken> RefreshTokens { get; private set; } = new();
 
         public List<PasswordResetCode> passwordResetCodes { get; private set; } = new();
+
+        public List<Address> addresses { get; private set; } = new();     
+        
+        public List<LoginHistory> loginHistories { get; private set; } = new(); 
+
         private User() { } // EF Core
 
         public User(string name, string email, string phoneNumber, string passwordHash, UserRole role)

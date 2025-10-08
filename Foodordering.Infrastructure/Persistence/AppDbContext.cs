@@ -1,5 +1,6 @@
 ﻿using Foodordering.Application.Common.Interfaces;
 using Foodordering.Domain.Entities;
+using FoodOrderingSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Foodordering.Infrastructure.Persistence
@@ -17,8 +18,19 @@ namespace Foodordering.Infrastructure.Persistence
 
         public DbSet<LoginHistory> loginHistories => Set<LoginHistory>();   
 
+        public DbSet<Address> addresses => Set<Address>();          
 
-        
+        public DbSet<MenuItem> menuItems => Set<MenuItem>();
+
+        public DbSet<Order> orders => Set<Order>();
+
+        public DbSet<OrderItem> orderItems => Set<OrderItem>();
+
+        public DbSet<Payment> payments => Set<Payment>();
+
+        public DbSet<OrderReview> orderReviews => Set<OrderReview>();
+
+        public DbSet<Restaurant> restaurant => Set<Restaurant>();
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
