@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Domain.Events
+namespace Foodordering.Domain.Events.User
 {
     public class UserRoleChangedEvent : DomainEvent
     {

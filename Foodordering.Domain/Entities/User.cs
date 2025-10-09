@@ -1,4 +1,5 @@
-﻿using Foodordering.Domain.Events;
+﻿using Foodordering.Domain.Events.User;
+using Foodordering.Domain.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace Foodordering.Domain.Entities
 
         public void ChangePassword(string NewPasswordHash)
         { 
-        PasswordHash = NewPasswordHash;
+             PasswordHash = NewPasswordHash;
             SecurityStamp = Guid.NewGuid().ToString();
             DomainEvents.Add(new UserPasswordChangedEvent(Id));
         }

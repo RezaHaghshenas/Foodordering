@@ -4,7 +4,7 @@ using Foodordering.Application.Common.Behaviors;
 using Foodordering.Application.Common.Interfaces;
 using Foodordering.Application.Users.Commands;
 using Foodordering.Infrastructure.Persistence;
-using Foodordering.KafkaConsumers.Consumers;
+using Foodordering.KafkaConsumers.Consumers.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

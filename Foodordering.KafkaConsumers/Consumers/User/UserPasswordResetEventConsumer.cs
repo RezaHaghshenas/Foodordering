@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using Foodordering.Domain.Events;
+using Foodordering.Domain.Events.User;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.KafkaConsumers.Consumers
+namespace Foodordering.KafkaConsumers.Consumers.User
 {
     public class UserPasswordResetEventConsumer
   : KafkaConsumerBase<UserPasswordResetEvent>

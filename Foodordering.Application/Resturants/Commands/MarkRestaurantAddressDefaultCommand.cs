@@ -7,17 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Application.Users.Commands
+namespace Foodordering.Application.Resturants.Commands
 {
-    public class MarkAddressDefaultCommand : IRequest<List<AddressDto>>
+  
+    public class MarkRestaurantAddressDefaultCommand : IRequest<List<AddressDto>>
     {
         public Guid Address_Id { get; set; }
     }
 
 
-    public class MarkAddressDefaultCommandValidator : AbstractValidator<MarkAddressDefaultCommand>
+    public class MarkRestaurantAddressDefaultCommandValidator : AbstractValidator<MarkRestaurantAddressDefaultCommand>
     {
-        public MarkAddressDefaultCommandValidator()
+        public MarkRestaurantAddressDefaultCommandValidator()
         {
             RuleFor(x => x.Address_Id)
           .NotEmpty().WithMessage("Addreess_Id نمی‌تواند خالی باشد");

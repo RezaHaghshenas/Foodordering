@@ -11,27 +11,30 @@ using System.Threading.Tasks;
 
 namespace Foodordering.Application.Users.Handlers
 {
-    public class RemoveAddressCommandHandler : IRequestHandler<RemoveAddressCommand, List<AddressDto>>
+    public class MarkUserAddressDefaultCommandHandler : IRequestHandler<MarkUserAddressDefaultCommand, List<AddressDto>>
     {
         private readonly IAppDbContext _context;
+        private readonly ITokenService _tokenService;
 
-        public RemoveAddressCommandHandler(IAppDbContext context)
+        public MarkUserAddressDefaultCommandHandler(IAppDbContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
-        public async Task<List<AddressDto>> Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
+        public async Task<List<AddressDto>> Handle(MarkUserAddressDefaultCommand request, CancellationToken cancellationToken)
         {
             var address = await _context.addresses.FirstOrDefaultAsync(f => f.Id == request.Address_Id);
             if (address == null)
             {
                 throw new Exception("آدرسی با این مشخصات پیدا نشد");
             }
-            _context.addresses.Remove(address);
-            await _context.SaveChangesAsync(cancellationToken);
             var other_addresses = new List<AddressDto>();
-
-            return await _context.addresses.Where(wh => wh.UserId == address.UserId).Select(u => new AddressDto
+            if (address.UserId == null)
+            {
+                throw new InvalidOperationException("کاربر یافت نشد.");
+            }
+            other_addresses = await _context.addresses.Where(wh => wh.UserId == address.UserId).Select(u => new AddressDto
             {
                 City = u.City,
                 Country = u.Country,
@@ -43,8 +46,15 @@ namespace Foodordering.Application.Users.Handlers
                 Street = u.Street,
                 Title = u.Title
             }
-          ).ToListAsync();
-        }
+).ToListAsync();
 
+            foreach (var item in other_addresses)
+            {
+                item.IsDefault = false;
+            }
+            address.IsDefault = true;
+            await _context.SaveChangesAsync(cancellationToken);
+            return other_addresses;
+        }
     }
 }

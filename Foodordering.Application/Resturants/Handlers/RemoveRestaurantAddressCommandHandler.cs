@@ -1,5 +1,6 @@
 ﻿using Foodordering.Application.Common.DTOs.Address;
 using Foodordering.Application.Common.Interfaces;
+using Foodordering.Application.Resturants.Commands;
 using Foodordering.Application.Users.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,29 +10,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Application.Users.Handlers
+namespace Foodordering.Application.Resturants.Handlers
 {
-    public class RemoveAddressCommandHandler : IRequestHandler<RemoveAddressCommand, List<AddressDto>>
+
+    public class RemoveRestaurantAddressCommandHandler : IRequestHandler<RemoveRestaurantAddressCommand, List<AddressDto>>
     {
         private readonly IAppDbContext _context;
+        private readonly ITokenService _tokenService;
 
-        public RemoveAddressCommandHandler(IAppDbContext context)
+        public RemoveRestaurantAddressCommandHandler(IAppDbContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
-        public async Task<List<AddressDto>> Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
+        public async Task<List<AddressDto>> Handle(RemoveRestaurantAddressCommand request, CancellationToken cancellationToken)
         {
             var address = await _context.addresses.FirstOrDefaultAsync(f => f.Id == request.Address_Id);
             if (address == null)
             {
                 throw new Exception("آدرسی با این مشخصات پیدا نشد");
             }
-            _context.addresses.Remove(address);
+            _context.addresses.Remove(address); 
             await _context.SaveChangesAsync(cancellationToken);
-            var other_addresses = new List<AddressDto>();
-
-            return await _context.addresses.Where(wh => wh.UserId == address.UserId).Select(u => new AddressDto
+            return await _context.addresses.Where(wh => wh.RestaurantId == address.RestaurantId).Select(u => new AddressDto
             {
                 City = u.City,
                 Country = u.Country,
@@ -43,8 +45,7 @@ namespace Foodordering.Application.Users.Handlers
                 Street = u.Street,
                 Title = u.Title
             }
-          ).ToListAsync();
+).ToListAsync();
         }
-
     }
 }

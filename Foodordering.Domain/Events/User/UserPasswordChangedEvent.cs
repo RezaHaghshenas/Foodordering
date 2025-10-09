@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Domain.Events
+namespace Foodordering.Domain.Events.User
 {
-    public class UserPasswordResetEvent : DomainEvent
+    public class UserPasswordChangedEvent : DomainEvent
     {
         public Guid UserId { get; }
 
-        public UserPasswordResetEvent(Guid userId) => UserId = userId;
+        public UserPasswordChangedEvent(Guid userId) => UserId = userId;
     }
 }

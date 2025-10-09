@@ -27,8 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resturants\Commands\" />
-    <Folder Include="Resturants\Handlers\" />
     <Folder Include="Resturants\Queries\" />
   </ItemGroup>
 

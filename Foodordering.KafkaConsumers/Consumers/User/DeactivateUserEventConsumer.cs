@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Foodordering.Domain.Events;
+using Foodordering.Domain.Events.User;
 
-namespace Foodordering.KafkaConsumers.Consumers
+namespace Foodordering.KafkaConsumers.Consumers.User
 {
     
      public class DeactivateUserEventConsumer
