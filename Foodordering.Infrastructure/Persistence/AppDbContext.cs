@@ -32,6 +32,14 @@ namespace Foodordering.Infrastructure.Persistence
 
         public DbSet<Restaurant> restaurant => Set<Restaurant>();
 
+        public DbSet<Cart> carts => Set<Cart>();
+        public DbSet<CartItem> cartItems => Set<CartItem>();
+
+
+
+
+
+
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);

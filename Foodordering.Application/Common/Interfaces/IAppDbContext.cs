@@ -28,7 +28,11 @@ namespace Foodordering.Application.Common.Interfaces
 
         DbSet<Payment> payments { get; }    
 
-        DbSet<OrderReview> orderReviews { get; }        
+        DbSet<OrderReview> orderReviews { get; }
+
+
+        DbSet<Cart> carts { get; }
+        public DbSet<CartItem> cartItems { get;  }
 
 
 

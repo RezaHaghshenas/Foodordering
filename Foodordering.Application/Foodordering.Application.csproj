@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Orders\Handlers\" />
+    <Folder Include="Orders\Queries\" />
     <Folder Include="Resturants\Queries\" />
   </ItemGroup>
 

@@ -25,6 +25,8 @@ namespace Foodordering.Domain.Entities
         public List<OrderItem> Items { get; private set; } = new();
         public List<Payment> Payments { get; private set; } = new();
 
+        public List<OrderReview> orderReviews { get; private set; } = new();    
+
         public Restaurant Restaurant { get; private set; } = null!;
         public User User { get; private set; } = null!;
 
@@ -43,6 +45,7 @@ namespace Foodordering.Domain.Entities
         {
             if (quantity <= 0) throw new InvalidOperationException("Invalid quantity");
             Items.Add(new OrderItem(Id, menuItemId, quantity, price));
+
             RecalculateTotal();
         }
 
