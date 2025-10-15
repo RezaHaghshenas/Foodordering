@@ -8,22 +8,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Application.Common.Carts.Handlers
+namespace Foodordering.Application.Carts.Handlers
 {
-    public class UpdateCartItemQuantityCommandHandler : IRequestHandler<UpdateCartItemQuantityCommand, bool>
+    public class SetDeliveryFeeToRestaurantCartCommandHandler : IRequestHandler<SetDeliveryFeeToRestaurantCartCommand, bool>
     {
         private readonly IAppDbContext _context;
 
-        public UpdateCartItemQuantityCommandHandler(IAppDbContext context)
+        public SetDeliveryFeeToRestaurantCartCommandHandler(IAppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<bool> Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SetDeliveryFeeToRestaurantCartCommand request, CancellationToken cancellationToken)
         {
             var cart = await _context.carts
                 .Include(c => c.RestaurantCarts)
-                    .ThenInclude(rc => rc.Items)
                 .FirstOrDefaultAsync(c => c.Id == request.CartId, cancellationToken);
 
             if (cart == null)
@@ -35,28 +34,10 @@ namespace Foodordering.Application.Common.Carts.Handlers
             if (restaurantCart == null)
                 throw new InvalidOperationException("سبد مربوط به این رستوران یافت نشد");
 
-            var item = restaurantCart.Items
-                .FirstOrDefault(i => i.Id == request.CartItemId);
-
-            if (item == null)
-                throw new InvalidOperationException("آیتم مورد نظر یافت نشد");
-
-            if (request.NewQuantity <= 0)
-            {
-                restaurantCart.Items.Remove(item);
-
-                if (!restaurantCart.Items.Any())
-                    cart.RemoveRestaurant(request.RestaurantId);
-            }
-            else
-            {
-                item.UpdateQuantity(request.NewQuantity);
-            }
+            restaurantCart.SetDeliveryFee(request.DeliveryFee);
 
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
     }
-
-
 }

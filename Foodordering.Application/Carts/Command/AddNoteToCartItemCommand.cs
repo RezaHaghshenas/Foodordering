@@ -8,25 +8,26 @@ using System.Threading.Tasks;
 
 namespace Foodordering.Application.Carts.Command
 {
-    public class RemoveCartItemCommand : IRequest<bool>
+    public class AddNoteToCartItemCommand : IRequest<bool>
     {
-
         public Guid CartId { get; set; }
-
         public Guid RestaurantId { get; set; }
-
         public Guid CartItemId { get; set; }
+        public string Note { get; set; }
 
-        public RemoveCartItemCommand(Guid cartid , Guid restaurantid , Guid itemid)
+        public AddNoteToCartItemCommand(Guid cartId, Guid restaurantId, Guid cartItemId, string note)
         {
-            CartId= cartid;
-            RestaurantId = restaurantid; 
-            CartItemId = itemid;    
+            CartId = cartId;
+            RestaurantId = restaurantId;
+            CartItemId = cartItemId;
+            Note = note;
         }
     }
-public class RemoveCartItemCommandValidator : AbstractValidator<RemoveCartItemCommand>
+
+
+public class AddNoteToCartItemCommandValidator : AbstractValidator<AddNoteToCartItemCommand>
     {
-        public RemoveCartItemCommandValidator()
+        public AddNoteToCartItemCommandValidator()
         {
             RuleFor(x => x.CartId)
                 .NotEmpty().WithMessage("شناسه سبد خرید الزامی است.");
@@ -36,6 +37,10 @@ public class RemoveCartItemCommandValidator : AbstractValidator<RemoveCartItemCo
 
             RuleFor(x => x.CartItemId)
                 .NotEmpty().WithMessage("شناسه آیتم الزامی است.");
+
+            RuleFor(x => x.Note)
+                .NotEmpty().WithMessage("یادداشت نمی‌تواند خالی باشد.")
+                .MaximumLength(200).WithMessage("یادداشت نمی‌تواند بیش از ۲۰۰ کاراکتر باشد.");
         }
     }
 

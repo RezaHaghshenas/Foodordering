@@ -2,7 +2,7 @@
 using Foodordering.Domain.Events;
 using Foodordering.Domain.ValueObjects.FoodOrderingSystem.Domain.ValueObjects.Enums;
 using System;
-using FoodOrderingSystem.Domain.Entities;
+using FoodOrdering.Domain.Entities;
 using System.Xml.Linq;
 
 namespace FoodOrderingSystem.Domain.Entities

@@ -35,7 +35,9 @@ namespace Foodordering.Infrastructure.Persistence
         public DbSet<Cart> carts => Set<Cart>();
         public DbSet<CartItem> cartItems => Set<CartItem>();
 
+        public DbSet<DiscountCode> discountCodes => Set<DiscountCode>();
 
+        
 
 
 

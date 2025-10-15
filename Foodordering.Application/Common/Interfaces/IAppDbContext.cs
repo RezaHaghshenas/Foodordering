@@ -1,5 +1,6 @@
 ﻿// Application/Common/Interfaces/IAppDbContext.cs
 using Foodordering.Domain.Entities;
+using FoodOrdering.Domain.Entities;
 using FoodOrderingSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -32,8 +33,8 @@ namespace Foodordering.Application.Common.Interfaces
 
 
         DbSet<Cart> carts { get; }
-        public DbSet<CartItem> cartItems { get;  }
-
+         DbSet<CartItem> cartItems { get;  }
+ DbSet<DiscountCode> discountCodes { get;  }
 
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

@@ -12,29 +12,42 @@ namespace Foodordering.Domain.Entities
         public Guid MenuItemId { get; private set; }
         public int Quantity { get; private set; }
         public decimal Price { get; private set; }
-
         public decimal EachPrice { get; set; }
+
+        public string ?Note { get; private set; }
+
+        
+
+        public Guid RestaurantCartId { get; set; }
+        public RestaurantCart RestaurantCart { get; set; } = null!;
 
         private CartItem() { }
 
-        public CartItem(Guid menuItemId, int quantity, decimal price , decimal eachprice)
+        public CartItem(Guid menuItemId, int quantity, decimal price, decimal eachPrice, Guid restaurantCartId)
         {
             MenuItemId = menuItemId;
             Quantity = quantity;
             Price = price;
-            EachPrice = eachprice;
+            EachPrice = eachPrice;
+            RestaurantCartId = restaurantCartId;
         }
 
-        public void IncreaseQuantity(int IncreaseValue)
+        public void IncreaseQuantity(int increaseValue)
         {
-            Quantity += IncreaseValue;
-            Price = (EachPrice * Quantity);
+            Quantity += increaseValue;
+            Price = EachPrice * Quantity;
         }
 
         public void UpdateQuantity(int newQuantity)
-            {
+        {
             Quantity = newQuantity;
-            Price = (EachPrice * newQuantity);        
+            Price = EachPrice * newQuantity;
+        }
+
+
+        public void AddNote(string note)
+        {
+            Note = note; 
         }
     }
 }

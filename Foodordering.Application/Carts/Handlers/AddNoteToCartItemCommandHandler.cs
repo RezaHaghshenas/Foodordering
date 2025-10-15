@@ -8,18 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Application.Common.Carts.Handlers
+namespace Foodordering.Application.Carts.Handlers
 {
-    public class UpdateCartItemQuantityCommandHandler : IRequestHandler<UpdateCartItemQuantityCommand, bool>
+    public class AddNoteToCartItemCommandHandler : IRequestHandler<AddNoteToCartItemCommand, bool>
     {
         private readonly IAppDbContext _context;
 
-        public UpdateCartItemQuantityCommandHandler(IAppDbContext context)
+        public AddNoteToCartItemCommandHandler(IAppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<bool> Handle(UpdateCartItemQuantityCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AddNoteToCartItemCommand request, CancellationToken cancellationToken)
         {
             var cart = await _context.carts
                 .Include(c => c.RestaurantCarts)
@@ -41,22 +41,10 @@ namespace Foodordering.Application.Common.Carts.Handlers
             if (item == null)
                 throw new InvalidOperationException("آیتم مورد نظر یافت نشد");
 
-            if (request.NewQuantity <= 0)
-            {
-                restaurantCart.Items.Remove(item);
-
-                if (!restaurantCart.Items.Any())
-                    cart.RemoveRestaurant(request.RestaurantId);
-            }
-            else
-            {
-                item.UpdateQuantity(request.NewQuantity);
-            }
+            item.AddNote(request.Note);
 
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
     }
-
-
 }

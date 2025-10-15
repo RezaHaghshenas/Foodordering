@@ -1,4 +1,5 @@
-﻿using FoodOrderingSystem.Domain.Entities;
+﻿using FoodOrdering.Domain.Entities;
+using FoodOrderingSystem.Domain.Entities;
 using System;
 
 namespace Foodordering.Domain.Entities

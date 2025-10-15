@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,21 @@ namespace Foodordering.Application.Carts.Command
 
         public Guid CartId { get; set; }
 
-        public ClearCartCommand(Guid userId , Guid cartid)
+        public ClearCartCommand(Guid userId, Guid cartid)
         {
             UserId = userId;
             CartId = cartid;
+        }
+    }
+    public class ClearCartCommandValidator : AbstractValidator<ClearCartCommand>
+    {
+        public ClearCartCommandValidator()
+        {
+            RuleFor(x => x.UserId)
+                .NotEmpty().WithMessage("شناسه کاربر الزامی است.");
+
+            RuleFor(x => x.CartId)
+                .NotEmpty().WithMessage("شناسه سبد خرید الزامی است.");
         }
     }
 

@@ -3,70 +3,74 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Foodordering.Domain.Entities
 {
-    public class Cart
-    {
-        public Guid Id { get; private set; } = Guid.NewGuid();
-        public Guid UserId { get; private set; }
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-        public DateTime? LastUpdatedAt { get; private set; }
-
-        public List<CartItem> Items { get; private set; } = new();
-
-        private Cart() { }
-
-        public Cart(Guid userId)
+    
+        public class Cart
         {
-            UserId = userId;
-        }
+            public Guid Id { get; private set; } = Guid.NewGuid();
+            public Guid UserId { get; private set; }
+            public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+            public DateTime? LastUpdatedAt { get; private set; }
 
-        public void AddItem(Guid menuItemId, int quantity, decimal price , decimal eachprice)
-        {
-            var existing = Items.FirstOrDefault(i => i.MenuItemId == menuItemId);
-            if (existing != null)
-                existing.IncreaseQuantity(quantity);
-            else
-                Items.Add(new CartItem(menuItemId, quantity, price , eachprice));
+            public Decimal TotalPrice_AfterDiscount { get; set; }
 
-            LastUpdatedAt = DateTime.UtcNow;
-        }
+            public Guid DiscountCode_Id { get; set; }
 
-        public void RemoveMenuItem(Guid menuItemId)
-        {
-            Items.RemoveAll(i => i.MenuItemId == menuItemId);
-            LastUpdatedAt = DateTime.UtcNow;
-        }
+        public List<RestaurantCart> RestaurantCarts { get; private set; } = new();
 
-        public void RemoveCartItem(CartItem item)
-        {
-            Items.Remove(item);
-            LastUpdatedAt = DateTime.UtcNow;
-        }
+            private Cart() { }
 
-        public void Clear()
-        {
-            Items.Clear();
-            LastUpdatedAt = DateTime.UtcNow;
-        }
-
-
-        public void MarkForDeletion()
-        {
-            // در صورت نیاز می‌تونی رویداد دامنه‌ای اضافه کنی یا فلگ بزنی
-            Items.Clear(); // پاک‌سازی آیتم‌ها
-                           // می‌تونی در آینده فلگ IsDeleted اضافه کنی
-        }
-
-        public Order ToOrder(Guid restaurantId, string address, string phone)
-        {
-            var order = new Order(UserId, restaurantId, address, phone);
-            foreach (var item in Items)
+            public Cart(Guid userId)
             {
-                order.AddItem(item.MenuItemId, item.Quantity, item.Price);
+                UserId = userId;
             }
-            return order;
+
+            public void AddItem(Guid restaurantId, Guid menuItemId, int quantity,decimal eachPrice)
+            {
+                var restaurantCart = RestaurantCarts.FirstOrDefault(rc => rc.RestaurantId == restaurantId);
+                if (restaurantCart == null)
+                {
+                    restaurantCart = new RestaurantCart(restaurantId);
+                    RestaurantCarts.Add(restaurantCart);
+                }
+            var totalPrice = eachPrice * quantity;
+            restaurantCart.AddItem(menuItemId, quantity, totalPrice, eachPrice);
+                LastUpdatedAt = DateTime.UtcNow;
+            }
+
+
+
+
+
+            public void RemoveRestaurant(Guid restaurantId)
+            {
+                RestaurantCarts.RemoveAll(rc => rc.RestaurantId == restaurantId);
+                LastUpdatedAt = DateTime.UtcNow;
+            }
+
+            public void Clear()
+            {
+                RestaurantCarts.Clear();
+                LastUpdatedAt = DateTime.UtcNow;
+            }
+
+            public List<Order> ToOrders(Address address, string phone)
+            {
+                var orders = new List<Order>();
+                foreach (var rc in RestaurantCarts)
+                {
+                    var order = rc.ToOrder(UserId, address, phone);
+                    orders.Add(order);
+                }
+                return orders;
+            }
         }
     }
-}
+
+

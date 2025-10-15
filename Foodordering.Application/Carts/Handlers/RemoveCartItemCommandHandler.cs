@@ -8,37 +8,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foodordering.Application.Common.Carts.Handlers
+namespace Foodordering.Application.Carts.Handlers
 {
-    public class RemoveCartItemCommandHandler : IRequestHandler<RemoveCartItemCommand , bool>
+    public class RemoveCartItemCommandHandler : IRequestHandler<RemoveCartItemCommand, bool>    
     {
-        private readonly IAppDbContext _context;
+        private readonly IAppDbContext _context ;
         public RemoveCartItemCommandHandler(IAppDbContext context)
-        { 
-        
+        {
+            _context = context;
         }
 
-
-
-        public async Task<bool> Handle(RemoveCartItemCommand request,CancellationToken cancellationToken)
+        public async Task<bool> Handle(RemoveCartItemCommand request, CancellationToken cancellationToken)
         {
             var cart = await _context.carts
-                   .Include(c => c.Items)
-                   .FirstOrDefaultAsync(c => c.Id == request.CartId, cancellationToken);
+                .Include(c => c.RestaurantCarts)
+                    .ThenInclude(rc => rc.Items)
+                .FirstOrDefaultAsync(c => c.Id == request.CartId, cancellationToken);
 
             if (cart == null)
-                throw new InvalidOperationException("--- نشد");
+                throw new InvalidOperationException("سبد خرید یافت نشد");
 
-            var SelectedItem =  cart.Items?.FirstOrDefault(u => u.Id == request.CartItemId);
-            if (SelectedItem == null)
-            {
-                throw new InvalidOperationException("آیتم یافت نشد");
-            }
-            cart.RemoveCartItem(SelectedItem!);
+            var restaurantCart = cart.RestaurantCarts
+                .FirstOrDefault(rc => rc.RestaurantId == request.RestaurantId);
+
+            if (restaurantCart == null)
+                throw new InvalidOperationException("سبد مربوط به این رستوران یافت نشد");
+
+            var item = restaurantCart.Items
+                .FirstOrDefault(i => i.Id == request.CartItemId);
+
+            if (item == null)
+                throw new InvalidOperationException("آیتم مورد نظر یافت نشد");
+
+            restaurantCart.RemoveItem(item.Id);
+
+            if (!restaurantCart.Items.Any())
+                cart.RemoveRestaurant(restaurantCart.RestaurantId);
 
             await _context.SaveChangesAsync(cancellationToken);
-
             return true;
         }
+
     }
 }

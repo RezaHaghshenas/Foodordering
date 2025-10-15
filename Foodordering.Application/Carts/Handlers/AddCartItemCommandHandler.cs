@@ -1,6 +1,7 @@
 ﻿using Foodordering.Application.Carts.Command;
 using Foodordering.Application.Common.Interfaces;
 using Foodordering.Domain.Entities;
+using FoodOrderingSystem.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,15 +24,15 @@ namespace Foodordering.Application.Common.Carts.Handlers
         public async Task<Unit> Handle(AddCartItemCommand request, CancellationToken cancellationToken)
         {
             var cart = await _context.carts
-                .Include(c => c.Items)
+                .Include(c => c.RestaurantCarts)
                 .FirstOrDefaultAsync(c => c.UserId == request.UserId, cancellationToken);
 
-            var MenuItem = await _context.menuItems.FirstOrDefaultAsync(u=> u.Id == request.MenuItemId);
+            var menuItem = await _context.menuItems
+      .FirstOrDefaultAsync(u => u.Id == request.MenuItemId && u.RestaurantId == request.RestaurantId, cancellationToken);
 
-            if (MenuItem == null)
-            {
-                throw new Exception("چنین آیتمی در منو هیچ رستورانی یافت نشد "); 
-            }
+            if (menuItem == null)
+                throw new Exception("آیتم منو برای این رستوران یافت نشد.");
+
 
 
             if (cart == null)
@@ -39,9 +40,7 @@ namespace Foodordering.Application.Common.Carts.Handlers
                 cart = new Cart(request.UserId);
                 _context.carts.Add(cart);
             }
-
-            cart.AddItem(request.MenuItemId, request.Quantity, (MenuItem.Price * request.Quantity) ,MenuItem.Price);
-
+            cart.AddItem(request.RestaurantId, request.MenuItemId, request.Quantity,  menuItem.Price);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

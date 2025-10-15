@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="Orders\Handlers\" />
     <Folder Include="Orders\Queries\" />
+    <Folder Include="Payments\Queries\" />
     <Folder Include="Resturants\Queries\" />
   </ItemGroup>
 

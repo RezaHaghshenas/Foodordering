@@ -1,13 +1,17 @@
 ﻿using Foodordering.Domain.Entities;
+using Foodordering.Domain.Events;
+using Foodordering.Domain.Events.Order;
+using Foodordering.Domain.Events.Payment;
 using Foodordering.Domain.ValueObjects.FoodOrderingSystem.Domain.ValueObjects.Enums;
 using System;
 
-namespace FoodOrderingSystem.Domain.Entities
+namespace FoodOrdering.Domain.Entities
 {
     public class Payment
     {
         public Guid Id { get; private set; }
         public Guid OrderId { get; private set; }
+        public Guid CartId { get; set; }
         public decimal Amount { get; private set; }
         public PaymentMethod Method { get; private set; }
         public PaymentStatus Status { get; private set; } = PaymentStatus.Pending;
@@ -17,14 +21,19 @@ namespace FoodOrderingSystem.Domain.Entities
 
         public Order Order { get; private set; } = null!;
 
+        public Cart cart { get; private set; } = null!;
+
+        public List<DomainEvent> DomainEvents { get; private set; } = new List<DomainEvent>();
+
         private Payment() { }
 
-        public Payment(Guid orderId, decimal amount, PaymentMethod method)
+        public Payment(Guid cartid, decimal amount, PaymentMethod method)
         {
             Id = Guid.NewGuid();
-            OrderId = orderId;
+            CartId = cartid; 
             Amount = amount;
             Method = method;
+            CreatedAt = DateTime.UtcNow;    
         }
 
         public void MarkSuccess(string gatewayTransactionId)
@@ -32,9 +41,24 @@ namespace FoodOrderingSystem.Domain.Entities
             Status = PaymentStatus.Success;
             GatewayTransactionId = gatewayTransactionId;
             PaidAt = DateTime.UtcNow;
+
+            DomainEvents.Add(new Foodordering.Domain.Events.PaymentSucceededEvent(Id, OrderId, Amount, gatewayTransactionId));
         }
 
-        public void MarkFailed() => Status = PaymentStatus.Failed;
-        public void Refund() => Status = PaymentStatus.Refunded;
+        public void MarkFailed()
+        {
+            Status = PaymentStatus.Failed;
+            DomainEvents.Add(new Foodordering.Domain.Events.Payment.PaymentFailedEvent(Id, OrderId, Amount));
+        }
+
+        public void Refund(string reason)
+        {
+            if (Status != PaymentStatus.Success)
+                throw new InvalidOperationException("فقط پرداخت‌های موفق قابل بازپرداخت هستند.");
+
+            Status = PaymentStatus.Refunded;
+            DomainEvents.Add(new Foodordering.Domain.Events.Payment.PaymentRefundedEvent(Id, OrderId, Amount, reason));
+        }
+
     }
 }

@@ -8,8 +8,9 @@ using Foodordering.Domain.Events.User;
 using System.Numerics;
 using System.Xml.Linq;
 using Foodordering.Domain.ValueObjects.FoodOrderingSystem.Domain.ValueObjects.Enums;
+using FoodOrderingSystem.Domain.Entities;
 
-namespace FoodOrderingSystem.Domain.Entities
+namespace FoodOrdering.Domain.Entities
 {
     public class Restaurant
     {

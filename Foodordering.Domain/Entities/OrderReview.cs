@@ -1,4 +1,4 @@
-﻿using FoodOrderingSystem.Domain.Entities;
+﻿using FoodOrdering.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

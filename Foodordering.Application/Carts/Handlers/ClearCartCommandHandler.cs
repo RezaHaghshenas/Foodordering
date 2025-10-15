@@ -20,22 +20,25 @@ namespace Foodordering.Application.Common.Carts.Handlers
             _context = context;
         }
 
- 
+
         public async Task<bool> Handle(ClearCartCommand request, CancellationToken cancellationToken)
         {
             var cart = await _context.carts
-                .Include(c => c.Items)
+                .Include(c => c.RestaurantCarts)
                 .FirstOrDefaultAsync(c => c.UserId == request.UserId && c.Id == request.CartId, cancellationToken);
 
             if (cart == null)
                 return false;
 
+            if (!cart.RestaurantCarts.Any())
+                return true; // Already empty
+
             cart.Clear();
 
             await _context.SaveChangesAsync(cancellationToken);
-
             return true;
         }
+
 
     }
 }
